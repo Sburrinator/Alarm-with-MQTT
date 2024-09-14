@@ -1,19 +1,18 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#define pinPIR D1       // Pin PIR
-int statePIR  = LOW;     // Stato PIR
+#define pinPIR D1       
+int statePIR  = LOW;     
 
-const char *ssid = "CasaDeiDuri24";   // SSID WIFI
-const char *password = "Samuelduro"; // PSW WIFI
+const char *ssid = "Your SSID";   // SSID WIFI
+const char *password = "Your Password"; // PSW WIFI
 //#define BUZZER D7            // Pin buzzer
 
-const char *ID = "sensoremovimento1";  // Nome device
+const char *ID = "sensoremovimento1";  // device name
 const char *TOPIC = "allarme/output";  // Topic subscribe
-const char *TOPIC_PUB="allarme/movimento1";
-//const char *STATE_TOPIC = "hamza/culo/ciao";  // Topic publish
+const char *TOPIC_PUB="allarme/movimento1"; // Topic publish
 
-IPAddress broker(192,168,1,219); // IP broker raspberry
+IPAddress broker(192,168,1,219); // IP raspberry (broker)
 WiFiClient wclient;
 
 PubSubClient client(wclient); // Setup MQTT client
@@ -24,14 +23,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   
 }
 
-// Connessione con la rete WiFi
+// Wi-Fi connection
 void setup_wifi() {
   Serial.print("\nConnecting to ");
   Serial.println(ssid);
   WiFi.persistent(false);
   WiFi.begin(ssid, password); // Connect to network
 
-  while (WiFi.status() != WL_CONNECTED) { // Loop fino a che non si connette
+  while (WiFi.status() != WL_CONNECTED) { // loop until it connects
     delay(200);
     Serial.print(".");
   }
@@ -82,14 +81,14 @@ void loop() {
   int valPIR = digitalRead(pinPIR);
   if(valPIR==HIGH){
     if (statePIR == LOW) {
-      Serial.println("Movimento rilevato!");
+      Serial.println("Motion in the room!");
       client.publish(TOPIC_PUB, "rilevato");
       statePIR = HIGH;
     }
   }
   else{
     if (statePIR == HIGH) {
-      Serial.println("Movimento terminato!"); 
+      Serial.println("No more motion!"); 
       client.publish(TOPIC_PUB, "no");
       statePIR = LOW;
     }
