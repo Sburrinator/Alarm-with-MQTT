@@ -17,14 +17,12 @@ byte pin_column[COLUMN_NUM] = {D5, D6, D7, D8}; // The ESP8266 pins connect to t
 
 Keypad tastiera = Keypad( makeKeymap(key_layout), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
 
-const char *ssid = "CasaDeiDuri24";   // SSID WIFI
-const char *password = "Samuelduro"; // PSW WIFI
-//#define BUZZER D7            // Pin buzzer
+const char *ssid = "Your SSID";   // SSID WIFI
+const char *password = "Your Password"; // PSW WIFI
 
-const char *ID = "tastierino";  // Nome device
+const char *ID = "tastierino";  // device name
 const char *TOPIC = "allarme/output";  // Topic subscribe
-const char *TOPIC_PUB="allarme/tastierino";
-//const char *STATE_TOPIC = "hamza/culo/ciao";  // Topic publish
+const char *TOPIC_PUB="allarme/tastierino"; // topic publish
 
 IPAddress broker(192,168,1,219); // IP broker raspberry
 WiFiClient wclient;
@@ -92,18 +90,18 @@ void loop() {
   {
     reconnect();
   }
-  client.loop();
+  client.loop();            // loops the function
   String response;
-  if(primaVolta){
+  if(primaVolta){           //if it's the first time using the keypad it publishes "connesso" (to organize better the outputs on the raspberry console)
     client.publish(TOPIC_PUB, "connesso");
     primaVolta=!primaVolta;
   }
     
-  char tasto = (char)tastiera.getKey();
+  char tasto = (char)tastiera.getKey();  //gets the key pressed
   if (tasto) {
-    if (tasto == '#') {
-      if (codice == "1234") {
-        Serial.println("Corretto");
+    if (tasto == '#') {                  //"#" works like a send button
+      if (codice == "1234") {            //1234 is the code that is set, if it's correct, it publishes on the topic the new state of the alarm
+        Serial.println("Corretto");      //otherwise, if it's wrong, it doesnt do anything (you can set a buzzer or smth that make noise)
         codice = "";
         stato=!stato;
       } else {
@@ -117,7 +115,7 @@ void loop() {
         client.publish(TOPIC_PUB, "off");
         Serial.println("Pubblicato 'off'");
       }
-    } else {
+    } else {                            //adds every input letter to the "codice" string 
       codice += tasto; 
       Serial.println(tasto);
     }
