@@ -7,14 +7,14 @@ from email.mime.text import MIMEText
 
 
 
-subject = "Allarme"
+subject = "Allarme"     # email description
 body = "Intrusi rilevati"
-sender = "sentisafe05@gmail.com"
-recipients = ["mihalisamuel@gmail.com"]
-password = "dsax rpai mknr lrjw" #da cambiare per gmail diverso
+sender = "email that you use to send"
+recipients = ["email reciver"]
+password = "dsax rpai mknr lrjw" # check out some videos on how to use gmail as a SMTP server
 
 
-# Funzione per inviare email
+# function to send the email
 def send_email(subject, body, sender, recipients, password):
     msg = MIMEText(body)
     msg['Subject'] = subject
@@ -26,7 +26,7 @@ def send_email(subject, body, sender, recipients, password):
     print("Email inviata!")
 
 
-
+#
 def tastierinoInserisceDatabase(condizione):
     try:
         # Connessione al database MySQL
